@@ -11,6 +11,7 @@ function displayItems(){
 	itemsFromStorage.forEach(item =>{
 		addItemToDOM(item);
 	});
+	checkUI();
 }
 
 //Adding items on submit
@@ -73,6 +74,7 @@ function addItemToStorage(item){
 
 	//convert to JSON string using JSON.stringify() and set to localStorage
 	localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+	
 }
 
 //get items from localStorage
@@ -84,24 +86,50 @@ function getItemsFromStorage(){
 	}else{
 		itemsFromStorage = JSON.parse(localStorage.getItem('items'));
 	}
+
 	return itemsFromStorage;
 }
 
-//Remove item from the list when clicked on the delete mark
-function removeItem(e){
+function onClickItem(e){
 	if(e.target.parentElement.classList.contains('remove-item')){
-		if(confirm('Are you sure?')){
-			e.target.parentElement.parentElement.remove();
-		}
+		removeItem(e.target.parentElement.parentElement);
 	}
-	checkUI();
+}
+
+//Remove item from the list when clicked on the delete mark
+function removeItem(item){
+	if(confirm('Are you sure?')){
+		//Remove item from DOM
+		item.remove();
+
+		//remove item form the localStorage
+		removeItemFromLocalStorage(item.textContent);
+
+		checkUI();
+	}
+	
+}
+
+//Remove Items fromm the localStorage
+function removeItemFromLocalStorage(item){
+	let itemsFromStorage = getItemsFromStorage();
+	//Filter out items to be removed
+	itemsFromStorage = itemsFromStorage.filter(i => i!== item);
+
+	//re-set to local storage
+	localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 }
 
 //Clear all items in the list
 function clearItems(){
+	//clear all items from the DOM
 	while(itemList.firstChild){
 		itemList.removeChild(itemList.firstChild);
 	}
+
+	//Clear all items from the localStorage
+	localStorage.removeItem('items');
+
 	checkUI();
 }
 
@@ -139,7 +167,7 @@ function checkUI(){
 //Event Listeners
 function init(){
 	itemForm.addEventListener('submit', onAddItemSubmit);
-	itemList.addEventListener('click', removeItem);
+	itemList.addEventListener('click', onClickItem);
 	clearBtn.addEventListener('click', clearItems);
 	itemFilter.addEventListener('input', filterItems);
 	document.addEventListener('DOMContentLoaded', displayItems);
