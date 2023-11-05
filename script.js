@@ -3,6 +3,8 @@ const itemInput = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
 const itemFilter = document.getElementById('filter');
 const clearBtn = document.getElementById('clear');
+const formBtn = itemForm.querySelector('button');
+let isEditMode = false;
 
 //functions
 //display Items
@@ -93,7 +95,24 @@ function getItemsFromStorage(){
 function onClickItem(e){
 	if(e.target.parentElement.classList.contains('remove-item')){
 		removeItem(e.target.parentElement.parentElement);
+	}else{
+		setItemToEdit(e.target);
 	}
+}
+
+//Set Item to Edit Mode
+function setItemToEdit(item){
+	isEditMode = true;
+
+	itemList.querySelectorAll('li').forEach((i) =>{
+		i.classList.remove('edit-mode');
+	})
+
+	// item.style.color = 'red';
+	item.classList.add('edit-mode');//from style.css
+	formBtn.innerHTML = '<i class="fa-solid fa-open"></i> Update Item';
+	formBtn.style.backgroundColor = '#228B22';
+	itemInput.value = item.textContent;
 }
 
 //Remove item from the list when clicked on the delete mark
