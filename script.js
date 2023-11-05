@@ -35,6 +35,11 @@ function onAddItemSubmit(e){
 	itemToEdit.classList.remove('edit-mode');
 	itemToEdit.remove();
 	isEditMode = false;
+   }else{
+	if(checkIfItemExists(newItem)){
+		alert('That item already exists!');
+		return;
+	}
    }
 
    //Add item to DOM
@@ -196,6 +201,11 @@ function checkUI(){
 	formBtn.style.backgroundColor = '#333';
 
 	isEditMode = false;
+}
+
+function checkIfItemExists(item){
+	const itemsFromStorage = getItemsFromStorage();
+	return itemsFromStorage.includes(item);
 }
 
 
